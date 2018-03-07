@@ -30,3 +30,26 @@
 *.exe
 *.out
 *.app
+# gtags
+GTAGS
+GSYMS
+GRTAGS
+GPATH
+
+.*.swp
+
+# cmake
+CMakeCache*
+cmake_install*
+CMakeFiles
+
+#alias.br branch
+#alias.st status
+#alias.co checkout
+#alias.ci commit
+#alias.graph log --graph --format="%C(auto)%h %<(65,trunc)%s %Cblue%>(28)%an %Cred%cr"
+#alias.di diff
+#alias.cl clone
+
+# Project sepcific
+# .build
