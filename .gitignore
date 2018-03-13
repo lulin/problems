@@ -43,6 +43,9 @@ CMakeCache*
 cmake_install*
 CMakeFiles
 
+# vscode
+.vscode
+
 #alias.br branch
 #alias.st status
 #alias.co checkout
