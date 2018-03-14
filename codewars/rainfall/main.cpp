@@ -68,24 +68,22 @@ int Parser::load() {
       }
       break;
     case DATALIST:
-      state = DATA;
-      break;
-    case LINEFEED:
+      if (*pos == '\n') {
+        state = TOWN;
+      } else if (*pos == ',') {
+        state = DATALIST;
+      } else {
+        state = DATA;
+      }
       break;
     case DATA:
-      state = MONTH;
+      if (*pos == ',' || *pos == '\n') {
+      }
       break;
     case MONTH:
       break;
     case NUM:
-      if (*pos == '\n') {
-        state = TOWN;
-        symEnd = pos - raw.cbegin();
-        dataList.second.push_back(stod(raw.substr(symStart, symEnd)));
-      } else if (*pos == ',') {
-        state = MONTH;
-        dataList.second.push_back(stod(raw.substr(symStart, symEnd)));
-      }
+      if (!isnumber(*pos))
       break;
     default:
       break;
