@@ -51,8 +51,7 @@ enum ParserState {
 
 int Parser::load() {
   ParserState state = TOWN;
-  size_t symStart = 0;
-  size_t symEnd = 0;
+  auto start = raw.cbegin();
   pair<string, vector<double>> dataList;
   int month = 0;
 
@@ -60,31 +59,27 @@ int Parser::load() {
     switch (state) {
     case TOWN:
       if (*pos == ':') {
-        symEnd = pos - raw.cbegin();
-        dataList = make_pair(raw.substr(symStart, symEnd), vector<double>(12));
-        symStart = symEnd + 1;
+        dataList = make_pair(string(start, pos), vector<double>(12));
+        start = pos + 1;
         state = MONTH;
       }
       break;
     case MONTH:
       if (*pos == ' ') {
         state = NUM;
-        symStart = pos + 1 - raw.cbegin();
+        start = pos + 1;
       }
       break;
     case NUM:
-      if (*pos == '\n' || *pos == '\0') {
-        symEnd = pos - raw.cbegin();
-        dataList.second[month] = stod(raw.substr(symStart, symEnd));
-        cout << raw.substr(symStart, symEnd) << endl;
+      if (*pos == '\n' || pos + 1 == raw.cend()) {
+        dataList.second[month] = stod(string(start, pos + 1));
         data.insert(dataList);
         month = 0;
-        symStart = symEnd + 1;
+        start = pos + 1;
         state = TOWN;
       } else if (*pos == ',') {
-        symEnd = pos - raw.cbegin();
-        dataList.second[month++] = stod(raw.substr(symStart, symEnd));
-        symStart = symEnd + 1;
+        dataList.second[month++] = stod(string(start, pos));
+        start = pos + 1;
         state = MONTH;
       }
       break;
@@ -124,11 +119,13 @@ string sample =
     "3.3,Oct 1.7,Nov 0.5,Dec 0.7";
 
 int main(int argc, char *argv[]) {
-  cout << sample << endl << endl;
   Parser par(sample);
   for (auto p = par.getData().cbegin(); p != par.getData().cend(); p++) {
-    ;
-    //cout << p->first << ": " << p->second[0] << endl;
+    cout << p->first << ":";
+    for (auto p2 = p->second.cbegin(); p2 != p->second.cend(); p2++) {
+      cout << " " << *p2;
+    }
+    cout << endl;
   }
   return 0;
 }
