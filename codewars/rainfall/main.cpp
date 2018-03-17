@@ -96,6 +96,38 @@ public:
   static double variance(std::string town, const std::string &strng);
 };
 
+double Rainfall::mean(string town, const string &strng) {
+  Parser par(strng);
+  auto data = par.getData();
+  auto iterRecord = data.find(town);
+  if (iterRecord == data.end()) {
+    return -1;
+  }
+
+  double sum = 0.0;
+  for (auto it = iterRecord->second.cbegin(); it != iterRecord->second.cend(); it++) {
+    sum += *it;
+  }
+
+  return sum / iterRecord->second.size();
+}
+
+double Rainfall::variance(string town, const string &strng) {
+  double avg = mean(town, strng);
+  if (avg < 0) {
+    return -1;
+  }
+
+  Parser par(strng);
+  auto data = par.getData().find(town);
+
+  double sumOfPower = 0.0;
+  for (auto it = data->second.cbegin(); it != data->second.cend(); it++) {
+    sumOfPower += (*it - avg) * (*it - avg);
+  }
+  return sumOfPower / data->second.size();
+}
+
 string sample =
     "Rome:Jan 81.2,Feb 63.2,Mar 70.3,Apr 55.7,May 53.0,Jun 36.4,Jul 17.5,Aug "
     "27.5,Sep 60.9,Oct 117.7,Nov 111.0,Dec 97.9\n"
@@ -119,13 +151,15 @@ string sample =
     "3.3,Oct 1.7,Nov 0.5,Dec 0.7";
 
 int main(int argc, char *argv[]) {
-  Parser par(sample);
-  for (auto p = par.getData().cbegin(); p != par.getData().cend(); p++) {
-    cout << p->first << ":";
-    for (auto p2 = p->second.cbegin(); p2 != p->second.cend(); p2++) {
-      cout << " " << *p2;
-    }
-    cout << endl;
-  }
+  // Parser par(sample);
+  // for (auto p = par.getData().cbegin(); p != par.getData().cend(); p++) {
+  //   cout << p->first << ":";
+  //   for (auto p2 = p->second.cbegin(); p2 != p->second.cend(); p2++) {
+  //     cout << " " << *p2;
+  //   }
+  //   cout << endl;
+  // }
+  cout << Rainfall::mean("Beijing", sample) << endl;
+  cout << Rainfall::variance("Beijing", sample) << endl;
   return 0;
 }
